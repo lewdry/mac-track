@@ -44,7 +44,7 @@ while cap.isOpened():
         item_name = model.names[class_id]
 
         # Only display items with greater than 30% confidence
-        if confidence > 0.3:
+        if confidence > 0.1:
             # Draw your signature cyberpunk yellow bounding box
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 2)
             
