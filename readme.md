@@ -1,7 +1,7 @@
 
 # Mac Track - Computer Vision Lab
 
-A local object detection playground for Apple Silicon (M1/M2/M3) Macs using MediaPipe and YOLOv8 via OpenCV.
+Hello! This is local object detection for Apple Silicon (M1/M2/M3) Macs using MediaPipe and YOLOv8 via OpenCV.
 
 ## Quick Start Setup
 
@@ -31,7 +31,7 @@ curl -L -o efficientdet.tflite "https://storage.googleapis.com/mediapipe-models/
 Runs a lightweight CPU tracking pipeline using Google's Tasks API.
 
 ```bash
-python pose.py
+python poseobj.py
 ```
 
 **Option B: YOLOv8 M1 GPU Tracking**
@@ -39,7 +39,7 @@ python pose.py
 Runs a highly accurate detection model accelerated natively on the Apple Silicon GPU via Metal Performance Shaders (MPS).
 
 ```bash
-python yolo_track.py
+python yolo.py
 ```
 
 ---
@@ -48,6 +48,6 @@ python yolo_track.py
 
 Click onto the active camera window to focus your OS interface, then use these shortcuts:
 
-- **SPACEBAR**: Capture a high-res .png snapshot with your custom yellow tracking boxes burned into the image asset.
-- **r**: Toggle video recording. Starts/Stops writing live frames with overlays directly to a timestamped .mp4 video file.
+- **SPACEBAR**: Capture .png snapshot with yellow tracking boxes.
+- **r**: Toggle video recording. Starts/Stops writing live frames to mp4.
 - **q**: Safely terminate the camera capture stream and close all tracking windows.
