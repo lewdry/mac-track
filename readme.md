@@ -26,7 +26,7 @@ curl -L -o efficientdet.tflite "https://storage.googleapis.com/mediapipe-models/
 
 ### 2. Run Object Tracking
 
-**Option A: MediaPipe Object Tracking**
+**Option A: MediaPipe Object Tracking** 
 
 Runs a lightweight CPU tracking pipeline using Google's Tasks API.
 

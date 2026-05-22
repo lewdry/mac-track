@@ -1,11 +1,14 @@
+import os
 import cv2
 import time
 from ultralytics import YOLO
 
 # 1. Initialize YOLOv8 Pose model 
-# This automatically downloads 'yolov8n-pose.pt' on first run (approx. 6.5MB)
 model = YOLO("yolov8n-pose.pt")
 model.to("mps")  # Run on Mac GPU
+
+# Ensure the 'output' directory exists in the current working directory
+os.makedirs("output", exist_ok=True)
 
 cap = cv2.VideoCapture(0)
 is_recording = False
@@ -27,7 +30,6 @@ while cap.isOpened():
     results = model(frame, verbose=False)[0]
 
     # 3. Let YOLO draw the skeleton automatically
-    # results.plot() renders the bounding boxes, keypoints, and skeleton lines natively
     frame = results.plot(boxes=False)
 
     # If actively recording, overlay the red recording dot and write frame
@@ -42,9 +44,11 @@ while cap.isOpened():
     
     # Action A: Capture photo with skeleton
     if key == 32:
-        filename = f"pose_capture_{int(time.time())}.png"
-        cv2.imwrite(filename, frame)
-        print(f" Saved skeleton photo as: {filename}")
+        # Save directly inside the relative 'output' directory
+        photo_path = f"output/pose_capture_{int(time.time())}.png"
+        
+        cv2.imwrite(photo_path, frame)
+        print(f" Saved skeleton photo as: {photo_path}")
             
     # Action B: Toggle video recording
     elif key == ord('r'):
@@ -52,11 +56,13 @@ while cap.isOpened():
             width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-            video_filename = f"pose_recording_{int(time.time())}.mp4"
             
-            video_writer = cv2.VideoWriter(video_filename, fourcc, 30.0, (width, height))
+            # Route video saving straight into the 'output' directory
+            video_path = f"output/pose_recording_{int(time.time())}.mp4"
+            
+            video_writer = cv2.VideoWriter(video_path, fourcc, 30.0, (width, height))
             is_recording = True
-            print(f" STARTED recording: {video_filename}")
+            print(f" STARTED recording: {video_path}")
         else:
             is_recording = False
             if video_writer is not None:
