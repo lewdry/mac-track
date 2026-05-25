@@ -18,11 +18,11 @@ is_recording = False
 video_writer = None
 
 # Custom styling configurations (Ghostly / Glitchy)
-OVERLAY_COLOR = (220, 220, 220)  # Pale silver/white mist
-GLITCH_COLOR = (255, 180, 100)   # Pale electric blue/cyan peak
-BASE_THICKNESS = 2
-TEXT_SCALE = 0.5
-ALPHA = 0.6                    # Low base opacity for a translucent, ethereal look
+OVERLAY_COLOR = (235, 235, 235)  # Pale silver/white mist
+GLITCH_COLOR = (255, 215, 95)   # Pale electric blue/cyan peak
+BASE_THICKNESS = 3
+TEXT_SCALE = 0.8
+ALPHA = 0.5     # Low base opacity for a translucent, ethereal look
 
 # Symmetrical COCO keypoint index mapping for body limbs (excluding head)
 BODY_CONNECTIONS = [
@@ -64,7 +64,7 @@ while cap.isOpened():
             class_id = int(box.cls[0])
             item_name = det_model.names[class_id]
 
-            if confidence > 0.25:
+            if confidence > 0.15:
                 # Apply structural offset if the frame triggers an active glitch
                 offset_x = random.randint(-15, 15) if is_glitching else 0
                 offset_y = random.randint(-5, 5) if is_glitching else 0
@@ -73,10 +73,10 @@ while cap.isOpened():
                 thick = BASE_THICKNESS + 2 if is_glitching else BASE_THICKNESS
                 
                 # Draw detached, ghostly corner markers instead of a rigid bounding box
-                cv2.line(overlay, (x1 + offset_x, y1 + offset_y), (x1 + 60 + offset_x, y1 + offset_y), color, thick)
-                cv2.line(overlay, (x1 + offset_x, y1 + offset_y), (x1 + offset_x, y1 + 60 + offset_y), color, thick)
-                cv2.line(overlay, (x2 + offset_x, y2 + offset_y), (x2 - 60 + offset_x, y2 + offset_y), color, thick)
-                cv2.line(overlay, (x2 + offset_x, y2 + offset_y), (x2 + offset_x, y2 - 60 + offset_y), color, thick)
+                cv2.line(overlay, (x1 + offset_x, y1 + offset_y), (x1 + 150 + offset_x, y1 + offset_y), color, thick)
+                cv2.line(overlay, (x1 + offset_x, y1 + offset_y), (x1 + offset_x, y1 + 150 + offset_y), color, thick)
+                cv2.line(overlay, (x2 + offset_x, y2 + offset_y), (x2 - 150 + offset_x, y2 + offset_y), color, thick)
+                cv2.line(overlay, (x2 + offset_x, y2 + offset_y), (x2 + offset_x, y2 - 150 + offset_y), color, thick)
                 
                 # Render clean monospace telemetry labels
                 label = f"{item_name.upper()} // {confidence:.2f}"
@@ -84,18 +84,52 @@ while cap.isOpened():
                             cv2.FONT_HERSHEY_PLAIN, TEXT_SCALE, color)
 
     # 4. Draw Body Pose Estimation (Loose, Fragmented Skeleton)
+
     if pose_results.keypoints is not None and len(pose_results.keypoints) > 0:
         for person in pose_results.keypoints:
             xy = person.xy[0].cpu().numpy()
             conf = person.conf[0].cpu().numpy() if person.conf is not None else [1.0] * 17
 
-            # Draw joints with shifting radius values
+            # Draw a large, less opaque box around the nose (keypoint 0)
+            if len(xy) > 0 and conf[0] > 0.4:
+                x_nose, y_nose = map(int, xy[0])
+                if x_nose > 0 or y_nose > 0:
+                    box_size = 220
+                    half_box = box_size // 2
+                    top_left = (x_nose - half_box, y_nose - half_box)
+                    bottom_right = (x_nose + half_box, y_nose + half_box)
+                    # Draw on a temp overlay for lower alpha
+                    nose_overlay = overlay.copy()
+                    cv2.rectangle(
+                        nose_overlay,
+                        top_left,
+                        bottom_right,
+                        OVERLAY_COLOR,
+                        max(1, BASE_THICKNESS - 1)
+                    )
+                    # Blend nose_overlay onto overlay with lower alpha
+                    cv2.addWeighted(nose_overlay, current_alpha, overlay, 1 - current_alpha, 0, overlay)
+
+
+            # Draw joints with shifting radius values and small square boxes
             for i in range(5, 17):
                 if i < len(xy) and conf[i] > 0.4:
                     x, y = map(int, xy[i])
                     if x > 0 or y > 0:
                         radius = random.choice([2, 4, 5]) if is_glitching else 3
                         cv2.circle(overlay, (x, y), radius, OVERLAY_COLOR, -1)
+                        # Draw a small square box centered at (x, y)
+                        box_size = 14
+                        half_box = box_size // 2
+                        top_left = (x - half_box, y - half_box)
+                        bottom_right = (x + half_box, y + half_box)
+                        cv2.rectangle(
+                            overlay,
+                            top_left,
+                            bottom_right,
+                            OVERLAY_COLOR,
+                            BASE_THICKNESS
+                        )
 
             # Draw limbs with occasional connection drops for an unstable feel
             for start_idx, end_idx in BODY_CONNECTIONS:
