@@ -2,9 +2,14 @@
 
 Local object detection for Apple Silicon (M1/M2/M3) Macs using MediaPipe and YOLOv8 via OpenCV.
 
-<img width="600" height="338" alt="processed_VID_20170916_173146-dithered" src="https://github.com/user-attachments/assets/d1803fa2-ee1b-4ae7-a709-6d09a93a5676" />
-<img width="600" height="338" alt="emojihead_recording_1780020619-dithered" src="https://github.com/user-attachments/assets/10547eb6-0615-44fa-924e-b240e3fdaa39" /><img width="600" height="336" alt="Screen Recording 2026-05-20 at 11 16 46 pm (1)-dithered" src="https://github.com/user-attachments/assets/9f22e615-8adf-4d92-9ce7-7c775144a793" />
+<img width="600" height="338" alt="emojihead_recording_1780020619-dithered" src="https://github.com/user-attachments/assets/10547eb6-0615-44fa-924e-b240e3fdaa39" />
 
+<img width="600" height="643" alt="processed_c82053f1-b511-4ef2-94ac-4463c16a3956-dithered" src="https://github.com/user-attachments/assets/b100d004-eccf-4cea-979b-e4bbd72d9c45" />
+
+
+<img width="600" height="338" alt="processed_VID_20170916_173146-dithered" src="https://github.com/user-attachments/assets/d1803fa2-ee1b-4ae7-a709-6d09a93a5676" />
+
+<img width="600" height="336" alt="Screen Recording 2026-05-20 at 11 16 46 pm (1)-dithered" src="https://github.com/user-attachments/assets/9f22e615-8adf-4d92-9ce7-7c775144a793" />
 
 
 ## Setup
